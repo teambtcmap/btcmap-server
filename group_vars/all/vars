@@ -1,0 +1,2 @@
+discord_webhook_url: "{{ vault_discord_webhook_url }}"
+airtable_api_key: "{{ vault_airtable_api_key }}"

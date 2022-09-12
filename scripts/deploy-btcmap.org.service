@@ -1,0 +1,4 @@
+[Service]
+Type=simple
+WorkingDirectory=/etc/btcmap.org
+ExecStart=/etc/btcmap.org/deploy.sh
