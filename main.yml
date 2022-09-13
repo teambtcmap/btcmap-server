@@ -41,14 +41,6 @@
         state: directory
         mode: '0755'
 
-    - name: Install report-elements-diff.sh
-      copy:
-        src: scripts/report-elements-diff.sh
-        dest: /usr/local/bin/report-elements-diff
-        owner: root
-        group: root
-        mode: '0755'
-
     - name: Install generate-legacy-nodes.sh
       copy:
         src: scripts/generate-legacy-nodes.sh
