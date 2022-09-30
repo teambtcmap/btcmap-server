@@ -11,34 +11,20 @@
           - jq
           - git
           - caddy
-          - docker
-          - docker-compose
         state: present
 
-    - name: Enable Caddy service
+    - name: Enable and start Caddy service
       systemd:
         name: caddy
         enabled: yes
-
-    - name: Start Caddy service
-      systemd:
-        name: caddy
-        state: started
-
-    - name: Enable Docker service
-      systemd:
-        name: docker
-        enabled: yes
-
-    - name: Start Docker service
-      systemd:
-        name: docker
         state: started
 
     - name: Create a directory for data.btcmap.org
       file:
         path: /srv/http/data.btcmap.org
         state: directory
+        owner: root
+        group: root
         mode: '0755'
 
     - name: Install generate-legacy-nodes.sh
@@ -58,7 +44,7 @@
         mode: '0755'
 
     - name: Install fetch-elements service
-      copy:
+      template:
         src: scripts/fetch-elements.service
         dest: /usr/lib/systemd/system/fetch-elements.service
         owner: root
@@ -73,14 +59,10 @@
         group: root
         mode: '0644'
 
-    - name: Enable fetch-elements timer
+    - name: Enable and start fetch-elements timer
       systemd:
         name: fetch-elements.timer
         enabled: yes
-
-    - name: Start fetch-elements timer
-      systemd:
-        name: fetch-elements.timer
         state: started
 
     - name: Install report-legacy-nodes.sh
@@ -111,45 +93,4 @@
       systemd:
         name: report-legacy-nodes.timer
         enabled: yes
-
-    - name: Start report-legacy-nodes timer
-      systemd:
-        name: report-legacy-nodes.timer
-        state: started
-
-    - name: Checkout btcmap.org repo
-      git:
-        repo: 'https://github.com/teambtcmap/btcmap.org.git'
-        dest: /etc/btcmap.org
-
-    - name: Add Airtable API key
-      lineinfile:
-        path: /etc/btcmap.org/.env
-        line: "AIRTABLE_API_KEY={{ airtable_api_key }}"
-        create: yes
-
-    - name: Install deploy-btcmap.org service
-      template:
-        src: scripts/deploy-btcmap.org.service
-        dest: /usr/lib/systemd/system/deploy-btcmap.org.service
-        owner: root
-        group: root
-        mode: '0644'
-
-    - name: Install deploy-btcmap.org timer
-      copy:
-        src: scripts/deploy-btcmap.org.timer
-        dest: /usr/lib/systemd/system/deploy-btcmap.org.timer
-        owner: root
-        group: root
-        mode: '0644'
-
-    - name: Enable deploy-btcmap.org timer
-      systemd:
-        name: deploy-btcmap.org.timer
-        enabled: yes
-
-    - name: Start deploy-btcmap.org timer
-      systemd:
-        name: deploy-btcmap.org.timer
         state: started

@@ -30,3 +30,5 @@ cp elements.json places.json
 rm /tmp/elements.json
 
 generate-legacy-nodes
+
+DISCORD_WEBHOOK_URL={{ discord_webhook_url }} btcmap-api sync
