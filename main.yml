@@ -35,33 +35,47 @@
         group: root
         mode: '0755'
 
-    - name: Install fetch-elements.sh
+    - name: Install generate-legacy-nodes service
       template:
-        src: scripts/fetch-elements.sh
-        dest: /usr/local/bin/fetch-elements
-        owner: root
-        group: root
-        mode: '0755'
-
-    - name: Install fetch-elements service
-      template:
-        src: scripts/fetch-elements.service
-        dest: /usr/lib/systemd/system/fetch-elements.service
+        src: scripts/generate-legacy-nodes.service
+        dest: /usr/lib/systemd/system/generate-legacy-nodes.service
         owner: root
         group: root
         mode: '0644'
 
-    - name: Install fetch-elements timer
+    - name: Install generate-legacy-nodes timer
       copy:
-        src: scripts/fetch-elements.timer
-        dest: /usr/lib/systemd/system/fetch-elements.timer
+        src: scripts/generate-legacy-nodes.timer
+        dest: /usr/lib/systemd/system/generate-legacy-nodes.timer
         owner: root
         group: root
         mode: '0644'
 
-    - name: Enable and start fetch-elements timer
+    - name: Enable and start generate-legacy-nodes timer
       systemd:
-        name: fetch-elements.timer
+        name: generate-legacy-nodes.timer
+        enabled: yes
+        state: started
+
+    - name: Install sync-elements service
+      template:
+        src: scripts/sync-elements.service
+        dest: /usr/lib/systemd/system/sync-elements.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Install sync-elements timer
+      copy:
+        src: scripts/sync-elements.timer
+        dest: /usr/lib/systemd/system/sync-elements.timer
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Enable and start sync-elements timer
+      systemd:
+        name: sync-elements.timer
         enabled: yes
         state: started
 
@@ -89,7 +103,7 @@
         group: root
         mode: '0644'
 
-    - name: Enable report-legacy-nodes timer
+    - name: Enable and start report-legacy-nodes timer
       systemd:
         name: report-legacy-nodes.timer
         enabled: yes
