@@ -9,15 +9,8 @@
         name:
           - bash-completion
           - jq
-          - git
           - caddy
         state: present
-
-    - name: Enable and start Caddy service
-      systemd:
-        name: caddy
-        enabled: yes
-        state: started
 
     - name: Create a directory for data.btcmap.org
       file:
@@ -25,86 +18,174 @@
         state: directory
         owner: root
         group: root
-        mode: '0755'
+        mode: '755'
 
-    - name: Install generate-legacy-nodes.sh
+    - name: Copy Caddyfile
+      copy:
+        src: Caddyfile
+        dest: /etc/caddy/
+        owner: root
+        group: root
+        mode: '644'
+
+    - name: Enable and start caddy.service
+      systemd:
+        name: caddy.service
+        enabled: yes
+        state: started
+
+    - name: Copy generate-legacy-nodes.sh
       copy:
         src: scripts/generate-legacy-nodes.sh
         dest: /usr/local/bin/generate-legacy-nodes
         owner: root
         group: root
-        mode: '0755'
+        mode: '755'
 
-    - name: Install generate-legacy-nodes service
+    - name: Copy generate-legacy-nodes.service
       template:
         src: scripts/generate-legacy-nodes.service
-        dest: /usr/lib/systemd/system/generate-legacy-nodes.service
+        dest: /etc/systemd/system/
         owner: root
         group: root
-        mode: '0644'
+        mode: '644'
 
-    - name: Install generate-legacy-nodes timer
+    - name: Copy generate-legacy-nodes.timer
       copy:
         src: scripts/generate-legacy-nodes.timer
-        dest: /usr/lib/systemd/system/generate-legacy-nodes.timer
+        dest: /etc/systemd/system/
         owner: root
         group: root
-        mode: '0644'
+        mode: '644'
 
-    - name: Enable and start generate-legacy-nodes timer
+    - name: Enable and start generate-legacy-nodes.timer
       systemd:
         name: generate-legacy-nodes.timer
         enabled: yes
         state: started
 
-    - name: Install sync-elements service
+    - name: Copy generate-report.service
+      template:
+        src: scripts/generate-report.service
+        dest: /etc/systemd/system/
+        owner: root
+        group: root
+        mode: '644'
+
+    - name: Copy generate-report.timer
+      copy:
+        src: scripts/generate-report.timer
+        dest: /etc/systemd/system/
+        owner: root
+        group: root
+        mode: '644'
+
+    - name: Enable and start generate-report.timer
+      systemd:
+        name: generate-report.timer
+        enabled: yes
+        state: started
+
+    - name: Copy sync-elements.service
       template:
         src: scripts/sync-elements.service
-        dest: /usr/lib/systemd/system/sync-elements.service
+        dest: /etc/systemd/system/
         owner: root
         group: root
-        mode: '0644'
+        mode: '644'
 
-    - name: Install sync-elements timer
+    - name: Copy sync-elements.timer
       copy:
         src: scripts/sync-elements.timer
-        dest: /usr/lib/systemd/system/sync-elements.timer
+        dest: /etc/systemd/system/
         owner: root
         group: root
-        mode: '0644'
+        mode: '644'
 
-    - name: Enable and start sync-elements timer
+    - name: Enable and start sync-elements.timer
       systemd:
         name: sync-elements.timer
         enabled: yes
         state: started
 
-    - name: Install report-legacy-nodes.sh
+    - name: Copy report-legacy-nodes.sh
       copy:
         src: scripts/report-legacy-nodes.sh
         dest: /usr/local/bin/report-legacy-nodes
         owner: root
         group: root
-        mode: '0755'
+        mode: '755'
 
-    - name: Install report-legacy-nodes service
+    - name: Copy report-legacy-nodes.service
       template:
         src: scripts/report-legacy-nodes.service
-        dest: /usr/lib/systemd/system/report-legacy-nodes.service
+        dest: /etc/systemd/system/
         owner: root
         group: root
-        mode: '0644'
+        mode: '644'
 
-    - name: Install report-legacy-nodes timer
+    - name: Copy report-legacy-nodes.timer
       copy:
         src: scripts/report-legacy-nodes.timer
-        dest: /usr/lib/systemd/system/report-legacy-nodes.timer
+        dest: /etc/systemd/system/
         owner: root
         group: root
-        mode: '0644'
+        mode: '644'
 
-    - name: Enable and start report-legacy-nodes timer
+    - name: Enable and start report-legacy-nodes.timer
       systemd:
         name: report-legacy-nodes.timer
+        enabled: yes
+        state: started
+
+    - name: Copy sync-users.service
+      template:
+        src: scripts/sync-users.service
+        dest: /etc/systemd/system/
+        owner: root
+        group: root
+        mode: '644'
+
+    - name: Copy sync-users.timer
+      copy:
+        src: scripts/sync-users.timer
+        dest: /etc/systemd/system/
+        owner: root
+        group: root
+        mode: '644'
+
+    - name: Enable and start sync-users.timer
+      systemd:
+        name: sync-users.timer
+        enabled: yes
+        state: started
+
+    - name: Copy backup-db.sh
+      copy:
+        src: scripts/backup-db.sh
+        dest: /usr/local/bin/backup-db
+        owner: root
+        group: root
+        mode: '755'
+
+    - name: Copy backup-db.service
+      template:
+        src: scripts/backup-db.service
+        dest: /etc/systemd/system/
+        owner: root
+        group: root
+        mode: '644'
+
+    - name: Copy backup-db.timer
+      copy:
+        src: scripts/backup-db.timer
+        dest: /etc/systemd/system/
+        owner: root
+        group: root
+        mode: '644'
+
+    - name: Enable and start backup-db.timer
+      systemd:
+        name: backup-db.timer
         enabled: yes
         state: started

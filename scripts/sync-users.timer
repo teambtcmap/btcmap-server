@@ -1,5 +1,5 @@
 [Timer]
-OnCalendar=*-*-* *:00,10,20,30,40,50:00
+OnCalendar=*-*-* 01:05:00
 Persistent=true
 
 [Install]

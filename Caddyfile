@@ -2,18 +2,22 @@
     admin "unix//run/caddy/admin.socket"
 }
 
-btcmap.org {
-    root * /srv/http/data.btcmap.org
-    file_server
-    @notstatic not path /data.json
-    reverse_proxy @notstatic localhost:3333
-    encode gzip
-}
-
 data.btcmap.org {
     root * /srv/http/data.btcmap.org
     file_server
-    encode zstd gzip
+    encode gzip
+
+    header {
+        Access-Control-Allow-Origin *
+    }
+}
+
+api.btcmap.org {
+    reverse_proxy localhost:8000
+
+    header { 
+        Access-Control-Allow-Origin *
+    }
 }
 
 import /etc/caddy/conf.d/*
