@@ -1,8 +1,8 @@
 ---
 
-- name: btcmap
+- name: btcmap-api
   hosts:
-    - btcmap
+    - btcmap-api
   tasks:
     - name: Install deps
       pacman:
@@ -12,95 +12,65 @@
           - caddy
         state: present
 
-    - name: Create a directory for data.btcmap.org
-      file:
-        path: /srv/http/data.btcmap.org
-        state: directory
-        owner: root
-        group: root
-        mode: '755'
-
-    - name: Copy Caddyfile
-      copy:
-        src: Caddyfile
-        dest: /etc/caddy/
-        owner: root
-        group: root
-        mode: '644'
-
     - name: Enable and start caddy.service
       systemd:
         name: caddy.service
         enabled: yes
         state: started
 
-    - name: Copy generate-legacy-nodes.sh
+    - name: Create Caddyfile
       copy:
-        src: scripts/generate-legacy-nodes.sh
-        dest: /usr/local/bin/generate-legacy-nodes
+        src: Caddyfile
+        dest: /etc/caddy/
         owner: root
         group: root
-        mode: '755'
+        mode: u=rw,go=r
 
-    - name: Copy generate-legacy-nodes.service
-      template:
-        src: scripts/generate-legacy-nodes.service
-        dest: /etc/systemd/system/
+    - name: Create directory for static.btcmap.org
+      file:
+        path: /srv/http/static.btcmap.org
+        state: directory
         owner: root
         group: root
-        mode: '644'
+        mode: u=rwx,go=rx
 
-    - name: Copy generate-legacy-nodes.timer
+    - name: Create Caddy config for static.btcmap.org
       copy:
-        src: scripts/generate-legacy-nodes.timer
-        dest: /etc/systemd/system/
+        src: etc/caddy/conf.d/static.btcmap.org
+        dest: /etc/caddy/conf.d/
         owner: root
         group: root
-        mode: '644'
+        mode: u=rw,go=r
 
-    - name: Enable and start generate-legacy-nodes.timer
-      systemd:
-        name: generate-legacy-nodes.timer
-        enabled: yes
-        state: started
-
-    - name: Copy generate-report.service
-      template:
-        src: scripts/generate-report.service
-        dest: /etc/systemd/system/
-        owner: root
-        group: root
-        mode: '644'
-
-    - name: Copy generate-report.timer
+    - name: Create Caddy config for api.btcmap.org
       copy:
-        src: scripts/generate-report.timer
-        dest: /etc/systemd/system/
+        src: etc/caddy/conf.d/api.btcmap.org
+        dest: /etc/caddy/conf.d/
         owner: root
         group: root
-        mode: '644'
+        mode: u=rw,go=r
 
-    - name: Enable and start generate-report.timer
-      systemd:
-        name: generate-report.timer
-        enabled: yes
-        state: started
+    - name: Download btcmap-api binary
+      get_url:
+        url: https://github.com/teambtcmap/btcmap-api/releases/download/preview/btcmap-api
+        dest: /usr/local/bin/btcmap-api
+        mode: u=rwx,go=rx
 
     - name: Copy sync-elements.service
       template:
-        src: scripts/sync-elements.service
+        src: etc/systemd/system/sync-elements.service
         dest: /etc/systemd/system/
         owner: root
         group: root
-        mode: '644'
+        mode: u=rw,go=r
 
     - name: Copy sync-elements.timer
       copy:
-        src: scripts/sync-elements.timer
+        src: etc/systemd/system/sync-elements.timer
         dest: /etc/systemd/system/
         owner: root
         group: root
-        mode: '644'
+        mode: u=rw,go=r
 
     - name: Enable and start sync-elements.timer
       systemd:
@@ -108,51 +78,21 @@
         enabled: yes
         state: started
 
-    - name: Copy report-legacy-nodes.sh
-      copy:
-        src: scripts/report-legacy-nodes.sh
-        dest: /usr/local/bin/report-legacy-nodes
-        owner: root
-        group: root
-        mode: '755'
-
-    - name: Copy report-legacy-nodes.service
-      template:
-        src: scripts/report-legacy-nodes.service
-        dest: /etc/systemd/system/
-        owner: root
-        group: root
-        mode: '644'
-
-    - name: Copy report-legacy-nodes.timer
-      copy:
-        src: scripts/report-legacy-nodes.timer
-        dest: /etc/systemd/system/
-        owner: root
-        group: root
-        mode: '644'
-
-    - name: Enable and start report-legacy-nodes.timer
-      systemd:
-        name: report-legacy-nodes.timer
-        enabled: yes
-        state: started
-
     - name: Copy sync-users.service
-      template:
-        src: scripts/sync-users.service
+      copy:
+        src: etc/systemd/system/sync-users.service
         dest: /etc/systemd/system/
         owner: root
         group: root
-        mode: '644'
+        mode: u=rw,go=r
 
     - name: Copy sync-users.timer
       copy:
-        src: scripts/sync-users.timer
+        src: etc/systemd/system/sync-users.timer
         dest: /etc/systemd/system/
         owner: root
         group: root
-        mode: '644'
+        mode: u=rw,go=r
 
     - name: Enable and start sync-users.timer
       systemd:
@@ -160,32 +100,68 @@
         enabled: yes
         state: started
 
-    - name: Copy backup-db.sh
+    - name: Copy generate-reports.service
       copy:
-        src: scripts/backup-db.sh
-        dest: /usr/local/bin/backup-db
-        owner: root
-        group: root
-        mode: '755'
-
-    - name: Copy backup-db.service
-      template:
-        src: scripts/backup-db.service
+        src: etc/systemd/system/generate-reports.service
         dest: /etc/systemd/system/
         owner: root
         group: root
-        mode: '644'
+        mode: u=rw,go=r
+
+    - name: Copy generate-reports.timer
+      copy:
+        src: etc/systemd/system/generate-reports.timer
+        dest: /etc/systemd/system/
+        owner: root
+        group: root
+        mode: u=rw,go=r
+
+    - name: Enable and start generate-reports.timer
+      systemd:
+        name: generate-reports.timer
+        enabled: yes
+        state: started
+
+    - name: Copy backup-db script
+      copy:
+        src: usr/local/bin/backup-db
+        dest: /usr/local/bin/
+        owner: root
+        group: root
+        mode: u=rwx,go=rx
+
+    - name: Copy backup-db.service
+      copy:
+        src: etc/systemd/system/backup-db.service
+        dest: /etc/systemd/system/
+        owner: root
+        group: root
+        mode: u=rw,go=r
 
     - name: Copy backup-db.timer
       copy:
-        src: scripts/backup-db.timer
+        src: etc/systemd/system/backup-db.timer
         dest: /etc/systemd/system/
         owner: root
         group: root
-        mode: '644'
+        mode: u=rw,go=r
 
     - name: Enable and start backup-db.timer
       systemd:
         name: backup-db.timer
+        enabled: yes
+        state: started
+
+    - name: Copy btcmap-api.service
+      template:
+        src: etc/systemd/system/btcmap-api.service
+        dest: /etc/systemd/system/
+        owner: root
+        group: root
+        mode: u=rw,go=r
+
+    - name: Enable and start btcmap-api.service
+      systemd:
+        name: btcmap-api.service
         enabled: yes
         state: started

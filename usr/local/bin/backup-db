@@ -1,0 +1,7 @@
+#!/bin/bash
+
+date=$(date --rfc-3339=seconds | sed 's/ /T/')
+live_db_path='/root/.local/share/btcmap/btcmap.db'
+backup_db_path="/root/.local/share/btcmap/backup/${date}.db"
+sqlite3 "$live_db_path" ".backup $backup_db_path"
+brotli -v --quality=11 --rm "$backup_db_path"

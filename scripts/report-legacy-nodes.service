@@ -1,4 +1,0 @@
-[Service]
-Type=oneshot
-Environment=DISCORD_WEBHOOK_URL={{ discord_webhook_url }}
-ExecStart=report-legacy-nodes

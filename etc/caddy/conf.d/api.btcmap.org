@@ -1,0 +1,7 @@
+api.btcmap.org {
+    reverse_proxy localhost:8000
+
+    header { 
+        Access-Control-Allow-Origin *
+    }
+}

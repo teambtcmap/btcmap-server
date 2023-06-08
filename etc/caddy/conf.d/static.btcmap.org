@@ -1,0 +1,9 @@
+static.btcmap.org {
+    root * /srv/http/static.btcmap.org
+    file_server
+    encode gzip
+
+    header {
+        Access-Control-Allow-Origin *
+    }
+}

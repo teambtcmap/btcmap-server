@@ -1,0 +1,6 @@
+[Service]
+Type=simple
+Environment=DISCORD_WEBHOOK_URL={{ discord_webhook_url }}
+ExecStart=btcmap-api server
+Restart=on-failure
+RestartSec=5s
