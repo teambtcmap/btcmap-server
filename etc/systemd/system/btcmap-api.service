@@ -1,6 +1,7 @@
 [Service]
 Type=simple
 Environment=DISCORD_WEBHOOK_URL={{ discord_webhook_url }}
+Environment=STADIA_API_KEY={{ stadia_api_key }}
 ExecStart=btcmap-api server
 Restart=on-failure
 RestartSec=5s

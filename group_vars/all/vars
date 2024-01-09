@@ -1,1 +1,2 @@
 discord_webhook_url: "{{ vault_discord_webhook_url }}"
+stadia_api_key: "{{ vault_stadia_api_key }}"
